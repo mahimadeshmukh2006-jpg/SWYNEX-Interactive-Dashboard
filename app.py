@@ -33,6 +33,15 @@ def load_data():
 
 df = load_data()
 
+# Prepare additional columns
+df["family_size"] = df["sibsp"] + df["parch"] + 1
+
+df["age_group"] = pd.cut(
+    df["age"],
+    bins=[0, 12, 18, 60, 100],
+    labels=["Child", "Teenager", "Adult", "Senior"]
+)
+
 
 # Sidebar filters
 st.sidebar.header("Dashboard Filters")
