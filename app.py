@@ -11,26 +11,28 @@ st.set_page_config(
 )
 
 # Load dataset
+
+# Load dataset
 @st.cache_data
 def load_data():
-    return pd.read_csv("data/titanic_cleaned.csv")
+    from pathlib import Path
+
+    possible_files = [
+        Path("data/titanic_cleaned.csv"),
+        Path("titanic_cleaned.csv"),
+        Path("titanic_cleaned (1).csv")
+    ]
+
+    for file in possible_files:
+        if file.exists():
+            return pd.read_csv(file)
+
+    raise FileNotFoundError(
+        "Titanic dataset not found. Please check the CSV file location."
+    )
 
 df = load_data()
 
-# Prepare additional columns
-df["family_size"] = df["sibsp"] + df["parch"] + 1
-
-df["age_group"] = pd.cut(
-    df["age"],
-    bins=[0, 12, 18, 60, 100],
-    labels=["Child", "Teenager", "Adult", "Senior"]
-)
-
-# Dashboard title
-st.title("🚢 Titanic Passenger Analytics")
-st.caption("Interactive Exploratory Data Analysis Dashboard")
-
-st.divider()
 
 # Sidebar filters
 st.sidebar.header("Dashboard Filters")
